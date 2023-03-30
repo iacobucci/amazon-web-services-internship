@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "tsc -w & nodemon -q -w dist dist/main.js",
-    "build": "tsc",
+    "build": "npx tsc",
     "server": "node dist/index.js"
   },
   "author": "iacobucci",
@@ -17,7 +17,6 @@
     "express": "^4.18.2",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
-    "tsc": "^2.0.4",
     "typescript": "^5.0.2"
   }
 }
