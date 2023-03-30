@@ -8,9 +8,9 @@ const REGION = "eu-north-1"; //e.g. "us-east-1"
 const s3Client = new S3Client({ region: REGION });
 
 const params = {
-  Bucket: "valerio-bucket-s3", // The name of the bucket. For example, 'sample-bucket-101'.
-  Key: "file_node.txt", // The name of the object. For example, 'sample_upload.txt'.
-  Body: "hello", // The content of the object. For example, 'Hello world!".
+  Bucket: "valerio-bucket-s3",
+  Key: "file_node.txt",
+  Body: "hello",
 };
 
 import { PutObjectCommand } from "@aws-sdk/client-s3";
