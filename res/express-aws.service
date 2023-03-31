@@ -1,0 +1,12 @@
+[Unit]
+Description=express-aws
+After=network.target
+
+[Service]
+Type=simple
+User=nginx
+ExecStart=/usr/bin/npm run fresh
+WorkingDirectory=/var/www/efs/express-aws
+
+[Install]
+WantedBy=multi-user.target

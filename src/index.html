@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>express-aws</title>
+</head>
+
+<body>
+    <div style="border: black; border-style: solid; max-width: fit-content; width: auto; ">
+        <h1>express-aws</h1>
+        usage:
+        <br>
+        /create?content=content
+        <br>
+        /read?id=id
+        <br>
+
+        <form method="GET" action="/create">
+            <label for="content">Contenuto:</label>
+            <br>
+            <input type="text" id="content" name="content"><br><br>
+            <br>
+            <button type="submit">create</button>
+        </form>
+
+        <br>
+
+        <form method="GET" action="/read">
+            <label for="id">Id:</label>
+            <br>
+            <input type="text" id="id" name="id"><br><br>
+            <br>
+            <button type="submit">read</button>
+        </form>
+
+
+</body>
+
+</html>
