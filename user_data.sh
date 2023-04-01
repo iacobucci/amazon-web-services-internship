@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$REPO=/var/www/efs/express-aws
+REPO=/var/www/efs/express-aws
 
 function install_packages {
 	yum update -y
