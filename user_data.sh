@@ -23,14 +23,14 @@ function mount_efs {
 }
 
 function install_repo {
-	rm -rf /var/www/efs/express-aws
+	rm -rf $REPO
 	git clone https://github.com/iacobucci/express-aws $REPO
 
 	for f in $REPO/res/*; do
 		rsync -avr $f /
 	done
 
-	chown -R nginx:nginx /var/www/efs/express-aws
+	chown -R nginx:nginx $REPO
 }
 
 function write_config {
