@@ -4,7 +4,6 @@ import path from "path";
 import dotenv from "dotenv";
 import mysql from "mysql";
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
 
 const REGION = "eu-north-1";
 const s3Client = new S3Client({ region: REGION });
@@ -17,6 +16,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
+// load environment variables from /var/www/efs/.env if it exists
+dotenv.config({ path: "/var/www/efs/.env" });
 
 const s3config = {
   Bucket: process.env.S3_BUCKET,

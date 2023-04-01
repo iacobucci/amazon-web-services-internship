@@ -5,7 +5,7 @@
   "description": "Aws S3 with express",
   "main": "index.ts",
   "scripts": {
-    "dev": "sh res/tunnel.sh & tsc -w & nodemon -q -w dist dist/main.js",
+    "dev": "sh tunnel.sh & tsc -w & nodemon -q -w dist dist/main.js",
     "build": "tsc ; cp src/index.html dist/index.html",
     "server": "node dist/main.js",
     "fresh": "npm install ; npm run build ; npm run server"

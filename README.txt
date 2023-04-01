@@ -9,6 +9,4 @@ frontend
 deploy
     dev
         [x] ssh tunnel
-    userdata script
-        [ ] nginx
-        [ ] systemd
+    [x] userdata script
