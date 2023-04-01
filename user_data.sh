@@ -26,7 +26,7 @@ function install_repo {
 	rm -rf /var/www/efs/express-aws
 	git clone https://github.com/iacobucci/express-aws $REPO
 
-	for f in $REPO/res; do
+	for f in $REPO/res/*; do
 		rsync -avr $f /
 	done
 
@@ -79,5 +79,5 @@ install_repo
 write_config
 install_filemanager
 install_aws_cli
-install_node_server
+# install_node_server
 enable_servers
