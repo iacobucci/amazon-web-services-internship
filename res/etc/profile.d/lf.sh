@@ -1,3 +1,4 @@
+#!/bin/bash
 lfcd() {
     tmp="$(mktemp)"
     # `command` is needed in case `lfcd` is aliased to `lf`

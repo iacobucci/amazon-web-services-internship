@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=nginx
 ExecStart=/usr/bin/npm run fresh
-WorkingDirectory=/var/www/efs/express-aws
+WorkingDirectory=/var/www/express-aws
 
 [Install]
 WantedBy=multi-user.target
