@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO=/var/www/efs/express-aws
+REPO=/var/www/express-aws
 
 function install_packages {
 	yum update -y
@@ -34,10 +34,6 @@ function install_repo {
 }
 
 function write_config {
-	mkdir -p /var/www/helloworld
-	echo ciao >/var/www/helloworld/index.html
-	chown -R apache:apache /var/www/helloworld
-
 	awk '/^listen = / {$3="/run/php-fpm/www.sock;"} 1' /etc/php-fpm.d/www.conf >/etc/php-fpm.d/www.conf.new
 	mv /etc/php-fpm.d/www.conf.new /etc/php-fpm.d/www.conf
 }
