@@ -71,7 +71,7 @@ connectToDb().then(() => {
 
       dbconn.query("INSERT INTO node.tab1 (A,B) VALUES (?,?)", [A, B], (err, result, fields) => {
         if (err) throw err;
-        
+
         res.send(A);
       });
 
@@ -96,7 +96,7 @@ connectToDb().then(() => {
 
       s3Client.send(new GetObjectCommand(params)).then((data) => {
         data.Body.transformToByteArray().then((data) => {
-          var td : TextDecoder = new TextDecoder();
+          var td: TextDecoder = new TextDecoder();
           res.send(td.decode(data));
         });
 
@@ -105,6 +105,14 @@ connectToDb().then(() => {
       });
     }); //get B from rds
 
+  });
+
+  app.get("/list", (req: Request, res: Response) => {
+    dbconn.query("SELECT A FROM node.tab1", (err, result, fields) => {
+
+      res.send(result.map((row: any) => row.A).join(", "));
+
+    });
   });
 
   app.listen(port, () => {
