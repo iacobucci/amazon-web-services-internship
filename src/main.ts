@@ -110,7 +110,12 @@ connectToDb().then(() => {
   app.get("/list", (req: Request, res: Response) => {
     dbconn.query("SELECT A FROM node.tab1", (err, result, fields) => {
 
-      res.send(result.map((row: any) => row.A).join(", "));
+      //print as json array
+      var json = "[";
+      for (var i = 0; i < result.length; i++) {
+        json+= "\"" + result[i].A + "\"" + (i == result.length - 1 ? "]" : ",");
+      }
+      res.send(json);
 
     });
   });
