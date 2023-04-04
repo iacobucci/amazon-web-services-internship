@@ -1,17 +1,20 @@
 #!/bin/bash
 
-REPO=/var/www/express-aws
+#la nuova architettura prevede:
+
 
 function install_packages {
+	# installazione dei pacchetti che faranno funzionare codedeploy
 	yum update -y
-	amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
-	amazon-linux-extras install -y nginx1
-	yum install -y amazon-efs-utils
-	yum install -y rsync
-	yum install -y git
+	yum install -y amazon-efs-utils rsync git ruby wget
+}
 
-	curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
-	yum install -y nodejs
+function install_codedeploy {
+
+	wget https://aws-codedeploy-eu-north-1.s3.eu-north-1.amazonaws.com/latest/install
+	ruby ./install auto
+	service codedeploy-agent start
+	
 }
 
 function mount_efs {
@@ -20,17 +23,6 @@ function mount_efs {
 10.55.15.43:/           /var/www/efs    nfs4            rw,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,noresvport,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=10.55.5.226,local_lock=none,addr=10.55.15.43        0 0     
 " >>/etc/fstab
 	mount -a
-}
-
-function install_repo {
-	rm -rf $REPO
-	git clone https://github.com/iacobucci/express-aws $REPO
-
-	for f in $REPO/res/*; do
-		rsync -avr $f /
-	done
-
-	chown -R nginx:nginx $REPO
 }
 
 function write_config {
@@ -57,19 +49,8 @@ function install_aws_cli {
 	echo -e "\n\neu-north-1\njson\n" | aws configure
 }
 
-function install_node_server {
-	cd $REPO
-	npm install
-	npm run build
-}
-
-function enable_servers {
-	systemctl enable --now php-fpm
-	systemctl enable --now express-aws
-	systemctl enable --now nginx
-}
-
 install_packages
+install_codedeploy
 mount_efs
 install_repo
 write_config

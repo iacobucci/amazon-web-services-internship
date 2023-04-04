@@ -15,15 +15,13 @@ aws codedeploy
         in place
         si seleziona l'autoscaling
 
-        si creano degli hook   
+        si creano degli hook
             instance launch
             instance terminate
 
 aggiungere l'AppSpec
 
 ***
-
-K-Sport/K-Sport-Video
 
 deployment 
     da repo
