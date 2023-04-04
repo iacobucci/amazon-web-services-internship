@@ -1,0 +1,48 @@
+npmrc
+    controllo strict sulla versione
+
+npm ci
+    non controlla nuove versioni, ma installa quello che c'è nel package lock
+    
+aws codedeploy
+    agent sulla macchina
+        in ascolto di eventi (come git push) 
+    sul deployment group
+    
+    toolchain
+        per ec2
+        IAM CodeDeployServiceRole
+        in place
+        si seleziona l'autoscaling
+
+        si creano degli hook   
+            instance launch
+            instance terminate
+
+aggiungere l'AppSpec
+
+***
+
+K-Sport/K-Sport-Video
+
+deployment 
+    da repo
+    da zip su s3
+    
+aws codepipline
+    prende da github
+    crea lo zip da mettere in s3
+    
+codebuild s3 -> compilato
+    in un container docker (matcha ambiente di produzione)
+        npm install
+        tsc
+
+prende il dist/index.js -> altro bucket s3
+    codedeploy
+    
+***
+
+faccio branch CODEDEPLOY
+    appspec
+    deployment script
