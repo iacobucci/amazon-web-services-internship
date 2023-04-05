@@ -1,5 +1,7 @@
 #!/bin/bash
 
-mkdir -p /var/www/express-aws/dist
-sh -c "cd /var/www/express-aws ; npm install"
-sh -c "cd /var/www/express-aws ; npm run build"
+REPO=/var/www/express-aws
+
+mkdir -p $REPO/dist
+sh -c "$REPO ; npm install"
+sh -c "$REPO ; npm run build"
