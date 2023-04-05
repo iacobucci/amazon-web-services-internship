@@ -3,17 +3,36 @@ os: linux
 files:
   - source: /
     destination: /var/www/express-aws
+  - source: /res/etc/nginx/conf.d/express-aws.conf
+    destination: /etc/nginx/conf.d/express-aws.conf
+  - source: /res/etc/nginx/conf.d/helloworld.conf
+    destination: /etc/nginx/conf.d/helloworld.conf
+  - source: /res/etc/nginx/conf.d/php-fpm.conf
+    destination: /etc/nginx/conf.d/php-fpm.conf
+  - source: /res/etc/nginx/conf.d/wordpress.conf
+    destination: /etc/nginx/conf.d/wordpress.conf
+  - source: /res/etc/nginx/conf.d/x_forwarded_proto_https.conf
+    destination: /etc/nginx/conf.d/x_forwarded_proto_https.conf
+  - source: /res/etc/nginx/default.d/php.conf
+    destination: /etc/nginx/default.d/php.conf
+  - source: /res/etc/nginx/nginx.conf
+    destination: /etc/nginx/nginx.conf
+  - source: /res/etc/profile.d/lf.sh
+    destination: /etc/profile.d/lf.sh
+  - source: /res/etc/systemd/system/express-aws.service
+    destination: /etc/systemd/system/express-aws.service
+  - source: /res/var/www/helloworld/index.html
+    destination: /var/www/helloworld/index.html
+
 hooks:
   AfterInstall:
-    - location: scripts/install_configuration
-      timeout: 300
-      runas: root
     - location: scripts/change_permissions
       timeout: 300
       runas: root
     - location: scripts/install_application
       timeout: 300
       runas: ec2-user
+  ApplicationStart:
     - location: scripts/start_server
       timeout: 300
       runas: root

@@ -47,10 +47,14 @@ function install_codedeploy {
 	service codedeploy-agent start
 }
 
+function start_nginx {
+	systemctl start nginx
+}
 
 install_packages
 mount_efs
 write_config
 install_filemanager
 install_aws_cli
+start_nginx
 install_codedeploy
