@@ -14,12 +14,12 @@ hooks:
       runas: root
     - location: scripts/install_application
       timeout: 300
-      runas: nginx
+      runas: ec2-user
     - location: scripts/start_server
       timeout: 300
-      runas: nginx
+      runas: ec2-user
   ApplicationStop:
     - location: scripts/stop_server
       timeout: 300
-      runas: nginx
+      runas: ec2-user
 

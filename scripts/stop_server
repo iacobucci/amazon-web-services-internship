@@ -1,5 +1,3 @@
 #!/bin/bash
 systemctl start express-aws
 systemctl start nginx
-
-
