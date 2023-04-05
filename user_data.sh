@@ -7,6 +7,10 @@ function install_packages {
 	# installazione dei pacchetti che faranno funzionare codedeploy
 	yum update -y
 	yum install -y amazon-efs-utils rsync git ruby wget
+
+    amazon-linux-extras install -y nginx1
+    curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
+    yum install -y nodejs
 }
 
 function install_codedeploy {
@@ -50,11 +54,12 @@ function install_aws_cli {
 }
 
 install_packages
-install_codedeploy
 mount_efs
 install_repo
 write_config
 install_filemanager
 install_aws_cli
-# install_node_server
 enable_servers
+
+#deployment
+install_codedeploy

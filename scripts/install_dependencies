@@ -4,12 +4,6 @@ REPO=/var/www/express-aws
 
 #qui ci vengono installati i pacchetti necessari per il funzionamento dell'applicazione
 
-function install_app_packages {
-    amazon-linux-extras install -y nginx1
-    curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
-    yum install -y nodejs
-}
-
 
 function install_resources {
 
@@ -21,5 +15,5 @@ function install_resources {
 }
 
 
-install_app_packages
+# install_app_packages
 install_resources
