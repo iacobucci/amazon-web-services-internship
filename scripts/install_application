@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /var/www/express-aws
+npm install
+npm run build
