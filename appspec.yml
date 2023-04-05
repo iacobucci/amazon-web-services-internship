@@ -4,7 +4,7 @@ files:
   - source: /
     destination: /var/www/express-aws
 hooks:
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/install_configuration
       timeout: 300
       runas: root
