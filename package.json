@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "sh tunnel.sh & tsc -w & nodemon -q -w dist dist/main.js",
-    "build": "tsc ; cp src/index.html dist/index.html",
+    "build": "tsc ; mkdir -p dist; cp src/index.html dist/index.html",
     "server": "node dist/main.js",
     "fresh": "npm install ; npm run build ; npm run server"
   },
