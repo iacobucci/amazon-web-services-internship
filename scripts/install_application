@@ -1,4 +1,5 @@
 #!/bin/bash
 
+mkdir -p /var/www/express-aws/dist
 sh -c "cd /var/www/express-aws ; npm install"
 sh -c "cd /var/www/express-aws ; npm run build"
