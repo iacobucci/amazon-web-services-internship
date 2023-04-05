@@ -1,24 +1,12 @@
 #!/bin/bash
 
-#la nuova architettura prevede:
-
-
 function install_packages {
-	# installazione dei pacchetti che faranno funzionare codedeploy
 	yum update -y
 	yum install -y amazon-efs-utils rsync git ruby wget
 
 	amazon-linux-extras install -y nginx1
 	curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
 	yum install -y nodejs
-}
-
-function install_codedeploy {
-
-	wget https://aws-codedeploy-eu-north-1.s3.eu-north-1.amazonaws.com/latest/install
-	ruby ./install auto
-	service codedeploy-agent start
-	
 }
 
 function mount_efs {
@@ -53,13 +41,16 @@ function install_aws_cli {
 	echo -e "\n\neu-north-1\njson\n" | aws configure
 }
 
+function install_codedeploy {
+	wget https://aws-codedeploy-eu-north-1.s3.eu-north-1.amazonaws.com/latest/install
+	ruby ./install auto
+	service codedeploy-agent start
+}
+
+
 install_packages
 mount_efs
-install_repo
 write_config
 install_filemanager
 install_aws_cli
-enable_servers
-
-#deployment
 install_codedeploy
