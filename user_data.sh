@@ -8,9 +8,9 @@ function install_packages {
 	yum update -y
 	yum install -y amazon-efs-utils rsync git ruby wget
 
-    amazon-linux-extras install -y nginx1
-    curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
-    yum install -y nodejs
+	amazon-linux-extras install -y nginx1
+	curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
+	yum install -y nodejs
 }
 
 function install_codedeploy {

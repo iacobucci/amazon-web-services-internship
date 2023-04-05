@@ -1,9 +1,6 @@
 #!/bin/bash
 
-
 REPO=/var/www/express-aws
-
-#qui ci vengono installati i pacchetti necessari per il funzionamento dell'applicazione
 
 function install_resources {
 	for f in $REPO/res/*; do
