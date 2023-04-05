@@ -30,6 +30,8 @@ deployment
 aws codepipline
     prende da github
     crea lo zip da mettere in s3
+
+    s3://bucket-name/deployment/express-aws.zip
     
 codebuild s3 -> compilato
     in un container docker (matcha ambiente di produzione)

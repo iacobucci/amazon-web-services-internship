@@ -2,17 +2,20 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /var/www/express-aws/
+    destination: /var/www/express-aws
 hooks:
-  BeforeInstall:
-    - location: scripts/install_dependencies
+  AfterInstall:
+    - location: scripts/install_configuration
       timeout: 300
       runas: root
+    - location: scripts/install_application
+      timeout: 300
+      runas: nginx
     - location: scripts/start_server
       timeout: 300
-      runas: root
+      runas: nginx
   ApplicationStop:
     - location: scripts/stop_server
       timeout: 300
-      runas: root
+      runas: nginx
 
