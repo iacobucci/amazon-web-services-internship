@@ -1,5 +1,4 @@
 #!/bin/bash
 
-cd /var/www/express-aws
-npm install
-npm run build
+sh -c "cd /var/www/express-aws ; npm install"
+sh -c "cd /var/www/express-aws ; npm run build"
