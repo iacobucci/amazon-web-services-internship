@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 function install_packages {
 	yum update -y
