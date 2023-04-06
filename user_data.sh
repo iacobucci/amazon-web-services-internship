@@ -29,6 +29,26 @@ function install_filemanager {
 	tar -xvf lf.tar
 	rm lf.tar
 	mv lf /bin
+
+	echo '
+	#!/bin/bash
+	lfcd() {
+		tmp="$(mktemp)"
+		# `command` is needed in case `lfcd` is aliased to `lf`
+		command lf -last-dir-path="$tmp" "$@"
+		if [ -f "$tmp" ]; then
+			dir="$(cat "$tmp")"
+			rm -f "$tmp"
+			if [ -d "$dir" ]; then
+				if [ "$dir" != "$(pwd)" ]; then
+					cd "$dir"
+				fi
+			fi
+		fi
+	}
+	alias lf="lfcd "
+
+	' > /etc/profile.d/lf.sh
 }
 
 function install_aws_cli {
@@ -39,16 +59,15 @@ function install_aws_cli {
 	echo -e "\n\neu-north-1\njson\n" | aws configure
 }
 
-function start_nginx {
-	systemctl enable --now nginx
-}
-
 function install_codedeploy {
 	wget https://aws-codedeploy-eu-north-1.s3.eu-north-1.amazonaws.com/latest/install
 	ruby ./install auto
 	service codedeploy-agent start
 }
 
+function start_nginx {
+	systemctl start nginx
+}
 
 install_packages
 mount_efs
