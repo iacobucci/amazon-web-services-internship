@@ -30,7 +30,25 @@ function install_filemanager {
 	rm lf.tar
 	mv lf /bin
 
-	cat $GIT_DIR/res/etc/profile.d/lf.sh >/etc/profile.d/lf.sh
+	echo "
+	#!/bin/bash
+	lfcd() {
+		tmp="$(mktemp)"
+		# `command` is needed in case `lfcd` is aliased to `lf`
+		command lf -last-dir-path="$tmp" "$@"
+		if [ -f "$tmp" ]; then
+			dir="$(cat "$tmp")"
+			rm -f "$tmp"
+			if [ -d "$dir" ]; then
+				if [ "$dir" != "$(pwd)" ]; then
+					cd "$dir"
+				fi
+			fi
+		fi
+	}
+	alias lf="lfcd "
+
+	" > /etc/profile.d/lf.sh
 }
 
 function install_aws_cli {
