@@ -27,9 +27,9 @@ hooks:
     - location: scripts/change_permissions
       timeout: 300
       runas: root
-    - location: scripts/install_application
-      timeout: 300
-      runas: ec2-user
+    # - location: scripts/install_application
+    #   timeout: 300
+    #   runas: ec2-user
   ApplicationStart:
     - location: scripts/start_server
       timeout: 300
