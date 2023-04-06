@@ -40,7 +40,7 @@ function install_aws_cli {
 }
 
 function start_nginx {
-	systemctl start nginx
+	systemctl enable --now nginx
 }
 
 function install_codedeploy {
