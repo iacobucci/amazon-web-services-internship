@@ -3,3 +3,4 @@ package-lock.json
 .env
 dist
 express-aws.zip
+express-aws-declarative.zip

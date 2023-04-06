@@ -30,7 +30,7 @@ function install_filemanager {
 	rm lf.tar
 	mv lf /bin
 
-	echo "
+	echo '
 	#!/bin/bash
 	lfcd() {
 		tmp="$(mktemp)"
@@ -48,7 +48,7 @@ function install_filemanager {
 	}
 	alias lf="lfcd "
 
-	" > /etc/profile.d/lf.sh
+	' > /etc/profile.d/lf.sh
 }
 
 function install_aws_cli {
