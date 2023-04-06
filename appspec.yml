@@ -19,7 +19,6 @@ files:
     destination: /etc/nginx/
   - source: /res/etc/systemd/system/express-aws.service
     destination: /etc/systemd/system/
-  - sour
 
 file_exists_behavior: OVERWRITE
 
