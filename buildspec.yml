@@ -20,7 +20,7 @@ phases:
 artifacts:
   files:
     - "dist/index.html"
-    - "dist/bundle.js"
+    - "dist/bundle.cjs"
     - "res/**/*"
     - "scripts/**/*"
     - "package.json"
