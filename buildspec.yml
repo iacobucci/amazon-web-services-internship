@@ -24,3 +24,4 @@ artifacts:
     - "res/**/*"
     - "scripts/**/*"
     - "package.json"
+    - "package-lock.json"

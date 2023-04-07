@@ -3,18 +3,10 @@ os: linux
 files:
   - source: /
     destination: /var/www/express-aws
-  - source: /res/etc/nginx/conf.d/express-aws.conf
-    destination: /etc/nginx/conf.d/
-  - source: /res/etc/nginx/conf.d/helloworld.conf
-    destination: /etc/nginx/conf.d/
-  - source: /res/etc/nginx/conf.d/php-fpm.conf
-    destination: /etc/nginx/conf.d/
-  - source: /res/etc/nginx/conf.d/wordpress.conf
-    destination: /etc/nginx/conf.d/
-  - source: /res/etc/nginx/conf.d/x_forwarded_proto_https.conf
-    destination: /etc/nginx/conf.d/
-  - source: /res/etc/nginx/default.d/php.conf
-    destination: /etc/nginx/default.d/
+  - source: /res/etc/nginx/conf.d
+    destination: /etc/nginx/conf.d
+  - source: /res/etc/nginx/default.d
+    destination: /etc/nginx/default.d
   - source: /res/etc/nginx/nginx.conf
     destination: /etc/nginx/
   - source: /res/etc/systemd/system/express-aws.service
