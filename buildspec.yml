@@ -25,3 +25,4 @@ artifacts:
     - "scripts/**/*"
     - "package.json"
     - "package-lock.json"
+    - "appspec.yml"
