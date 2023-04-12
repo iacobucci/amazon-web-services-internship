@@ -5,8 +5,8 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 861507897222.dkr.ecr.eu-north-1.amazonaws.com
-      - REPOSITORY_URI=861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws:latest
+      - REPOSITORY_URI=861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws:latest
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
