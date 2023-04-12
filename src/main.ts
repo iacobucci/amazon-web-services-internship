@@ -13,9 +13,8 @@ const port = process.env.PORT || 3000;
 
 const dirname = path.resolve();
 
+//load variables from .env file written by aws ssm
 dotenv.config();
-// load environment variables from /var/www/efs/.env if it exists
-dotenv.config({ path: "/var/www/efs/.env" });
 
 const s3config = {
   Bucket: process.env.S3_BUCKET,
