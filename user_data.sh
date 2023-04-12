@@ -5,6 +5,7 @@ function install_packages {
 	yum install -y amazon-efs-utils rsync git ruby wget
 
 	amazon-linux-extras install -y nginx1
+	sudo amazon-linux-extras -y install docker
 	curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
 	yum install -y nodejs
 }
@@ -69,10 +70,16 @@ function start_nginx {
 	systemctl start nginx
 }
 
+function start_docker {
+	systemctl start docker
+	sudo usermod -a -G docker ec2-user
+}
+
 install_packages
 mount_efs
 write_config
 install_filemanager
 install_aws_cli
 start_nginx
+start_docker
 install_codedeploy
