@@ -22,9 +22,6 @@ hooks:
     - location: scripts/refresh_nginx
       timeout: 300
       runas: root
-    - location: scripts/write_env
-      timeout: 300
-      runas: root
   ApplicationStart:
     - location: scripts/start_server
       timeout: 300
