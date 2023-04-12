@@ -1,3 +1,0 @@
-#!/bin/bash
-
-aws ssm get-parameter --name "valerio-parameters-crypt" --with-decryption --query "Parameter.Value" | sed -e 's/\\n/\n/g;s/"//g' > /var/www/express-aws/.env
