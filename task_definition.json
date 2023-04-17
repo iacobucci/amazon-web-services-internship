@@ -1,0 +1,71 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "container-express-aws",
+            "image": "861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws:6e9a2f5",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "container-express-aws-3000-tcp",
+                    "containerPort": 3000,
+                    "hostPort": 3000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                },
+                {
+                    "name": "container-express-aws-3306-tcp",
+                    "containerPort": 3306,
+                    "hostPort": 3306,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "S3_BUCKET",
+                    "value": "valerio-bucket-s3"
+                },
+                {
+                    "name": "RDS_USERNAME",
+                    "value": "admin"
+                },
+                {
+                    "name": "RDS_PASSWORD",
+                    "value": "password"
+                },
+                {
+                    "name": "RDS_HOSTNAME",
+                    "value": "database-valerio.cddrrdu3plsy.eu-north-1.rds.amazonaws.com"
+                },
+                {
+                    "name": "RDS_PORT",
+                    "value": "3306"
+                },
+                {
+                    "name": "RDS_DATABASE",
+                    "value": "node"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": []
+        }
+    ],
+    "family": "valerio-taskdefinition-express-aws",
+    "taskRoleArn": "arn:aws:iam::861507897222:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::861507897222:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "tags": []
+}
