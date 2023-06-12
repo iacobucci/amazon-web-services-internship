@@ -1,6 +1,6 @@
 name: Cloudformation
 on:
-  create:
+  push:
     branches:
       - "cfn"
 
