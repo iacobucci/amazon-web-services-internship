@@ -1,0 +1,34 @@
+name: Cloudformation
+on:
+  create:
+    branches:
+      - "cfn"
+
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: valerio-cfn-vpc
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-vpc
+          template: vpc.yml
+          no-fail-on-empty-changeset: "1"
+
+      - name: valerio-cfn-ecs
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-ecs
+          template: ecs.yml
+          no-fail-on-empty-changeset: "1"

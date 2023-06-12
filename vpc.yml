@@ -1,0 +1,322 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creazione di una VPC con 4 subnet (2 private e 2 pubbliche), Route Tables in eu-north-1a e eu-north-1b.
+  
+# parameters
+# iniziano con pXXX
+
+#parametro di cidrblock
+Parameters:
+  pKeyName:
+    Type: String
+    Description: Nome della chiave per accedere al bastion host
+    Default:
+      thinkpad
+  pCidrBlock:
+    Type: String
+    Default:
+      '10.56.0.0/16'
+  pEnableNat:
+    Type: String
+    Default:
+      "true"
+    AllowedValues:
+      - "true"
+      - "false"
+  pAmiId:
+    Description: AMI ID
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+        
+Conditions:
+  NatOn:
+    Fn::Equals: [ !Ref pEnableNat, "true" ]
+  NatOff:
+    Fn::Equals: [ !Ref pEnableNat, "false" ]
+  
+Resources:
+  # Crere Vpc
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref pCidrBlock
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: valerio-vpc-cf
+
+  # Creare due subnet pubbliche
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: !Ref AWS::Region
+      VpcId: !Ref Vpc
+      CidrBlock: '10.56.5.0/24'
+      MapPublicIpOnLaunch: true
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: !Ref AWS::Region
+      VpcId: !Ref Vpc
+      CidrBlock: '10.56.6.0/24'
+      MapPublicIpOnLaunch: true
+
+  # Creare due subnet private
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: !Ref AWS::Region
+      VpcId: !Ref Vpc
+      CidrBlock: '10.56.15.0/24'
+      MapPublicIpOnLaunch: false
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: !Ref AWS::Region
+      VpcId: !Ref Vpc
+      CidrBlock: '10.56.16.0/24'
+      MapPublicIpOnLaunch: false
+
+  # Creare una Route Table pubblica
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags:
+        - Key: Name
+          Value: PublicRouteTable
+
+  # Creare una Route Table privata
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags:
+        - Key: Name
+          Value: PrivateRouteTable
+
+  # Associare le subnet pubbliche alla Route Table pubblica
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  # Associare le subnet private alla Route Table privata
+  PrivateSubnet1RouteTableAssociation:
+    Condition: NatOff
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableAssociation:
+    Condition: NatOff
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
+
+  # Internet gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Condition: NatOn
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Condition: NatOn
+    Properties:
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PrivateRouteWithNat:
+    Type: AWS::EC2::Route
+    Condition: NatOn
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  PrivateRouteIGW:
+    Type: AWS::EC2::Route
+    Condition: NatOff
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    # Condition: NatOff
+    Properties:
+      GroupDescription: Security group for Bastion Host and Auto Scaling Group
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 2049
+        ToPort: 2049
+        CidrIp: !Ref pCidrBlock
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        CidrIp: !Ref pCidrBlock
+      - IpProtocol: tcp
+        FromPort: 3000
+        ToPort: 3000
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+
+  PrivateRouteTableNatAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: NatOn
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableNatAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: NatOn
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
+
+  BastionHost:
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: !Ref pAmiId 
+      InstanceType: t3.micro
+      # KeyName: thinkpad
+      KeyName: !Ref pKeyName
+      Monitoring: true
+      SourceDestCheck: false
+      # UserData: "sudo yum install iptables-services -y; echo 1 > /proc/sys/net/ipv4/ip_forward; iptables -t nat -A POSTROUTING -j MASQUERADE; iptables-save > /etc/sysconfig/iptables; systemctl enable iptables; systemctl start iptables"
+      SubnetId: !Ref PublicSubnet1
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+
+  # BastionEIP:
+  #   Type: AWS::EC2::EIP
+  #   Properties:
+  #     InstanceId: !Ref BastionHost
+
+  
+Outputs:
+  VpcId:
+    Description: Output of vpc
+    Value: !Ref Vpc
+    Export:
+      Name: valerio-vpc
+  PublicSubnet1:
+    Description: Output of public subnet 1
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: valerio-publicsubnet1
+  PublicSubnet2:
+    Description: Output of public subnet 2
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: valerio-publicsubnet2
+  PrivateSubnet1:
+    Description: Output of private subnet 1
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: valerio-privatesubnet1
+  PrivateSubnet2:
+    Description: Output of private subnet 2
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: valerio-privatesubnet2
+  PublicRouteTable:
+    Description: Output of public route table
+    Value: !Ref PublicRouteTable
+    Export:
+      Name: valerio-publicroutetable
+  PrivateRouteTable:  
+    Description: Output of private route table
+    Value: !Ref PrivateRouteTable
+    Export:
+      Name: valerio-privateroutetable
+  InternetGateway:
+    Condition: NatOff
+    Description: Output of internet gateway
+    Value: !Ref InternetGateway
+    Export:
+      Name: valerio-internetgateway
+  NatGateway:
+    Condition: NatOn
+    Description: Output of nat gateway
+    Value: !Ref NatGateway
+    Export:
+      Name: valerio-natgateway
+  SecurityGroup:
+    Description: Output of security group
+    Value: !Ref SecurityGroup
+    Export:
+      Name: valerio-securitygroup
+  BastionHost:
+    Description: Bastion Host
+    Value: !Ref BastionHost
+    Export:
+      Name: valerio-bastionhost
+  # BastionEIP:
+  #   Description: Bastion EIP ip
+  #   Value: !Ref BastionEIP
+  #   Export:
+  #     Name: valerio-bastioneip
+        
+  
+  
