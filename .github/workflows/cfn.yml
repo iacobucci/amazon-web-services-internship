@@ -20,15 +20,19 @@ jobs:
           aws-region: eu-north-1
 
       - name: valerio-cfn-vpc
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: valerio-cfn-vpc
-          template: vpc.yml
-          no-fail-on-empty-changeset: "1"
+        run: |
+          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-body file://vpc.yml --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
+        # uses: aws-actions/aws-cloudformation-github-deploy@v1
+        # with:
+        #   name: valerio-cfn-vpc
+        #   template: vpc.yml
+        #   no-fail-on-empty-changeset: "1"
 
       - name: valerio-cfn-ecs
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: valerio-cfn-ecs
-          template: ecs.yml
-          no-fail-on-empty-changeset: "1"
+        run: |
+          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-body file://ecs.yml --capabilities CAPABILITY_IAM --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
+        # uses: aws-actions/aws-cloudformation-github-deploy@v1
+        # with:
+        #   name: valerio-cfn-ecs
+        #   template: ecs.yml
+        #   no-fail-on-empty-changeset: "1"
