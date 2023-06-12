@@ -15,7 +15,7 @@ jobs:
       - name: Aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: eu-north-1
 
       - name: valerio-cfn-vpc
