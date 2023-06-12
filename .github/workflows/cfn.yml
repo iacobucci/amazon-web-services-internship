@@ -15,24 +15,21 @@ jobs:
       - name: Aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
 
       - name: valerio-cfn-vpc
-        run: |
-          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-file vpc.yml --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
-        # uses: aws-actions/aws-cloudformation-github-deploy@v1
-        # with:
-        #   name: valerio-cfn-vpc
-        #   template: vpc.yml
-        #   no-fail-on-empty-changeset: "1"
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-vpc
+          template: vpc.yml
+          no-fail-on-empty-changeset: "1"
 
       - name: valerio-cfn-ecs
-        run: |
-          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-file ecs.yml --capabilities CAPABILITY_IAM --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
-        # uses: aws-actions/aws-cloudformation-github-deploy@v1
-        # with:
-        #   name: valerio-cfn-ecs
-        #   template: ecs.yml
-        #   no-fail-on-empty-changeset: "1"
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-ecs
+          template: ecs.yml
+          no-fail-on-empty-changeset: "1"
