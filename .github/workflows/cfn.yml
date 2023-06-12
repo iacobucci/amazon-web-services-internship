@@ -21,7 +21,7 @@ jobs:
 
       - name: valerio-cfn-vpc
         run: |
-          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-body file://vpc.yml --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
+          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-file vpc.yml --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
         # uses: aws-actions/aws-cloudformation-github-deploy@v1
         # with:
         #   name: valerio-cfn-vpc
@@ -30,7 +30,7 @@ jobs:
 
       - name: valerio-cfn-ecs
         run: |
-          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-body file://ecs.yml --capabilities CAPABILITY_IAM --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
+          aws cloudformation deploy --stack-name valerio-cfn-vpc --template-file ecs.yml --capabilities CAPABILITY_IAM --role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_ID }}}
         # uses: aws-actions/aws-cloudformation-github-deploy@v1
         # with:
         #   name: valerio-cfn-ecs
