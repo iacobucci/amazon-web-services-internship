@@ -22,7 +22,7 @@ jobs:
       - name: valerio-cfn-vpc
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-arn: ${{ secrets.AWS_ROLE_ARN }}
           name: valerio-cfn-vpc
           template: vpc.yml
           no-fail-on-empty-changeset: "1"
@@ -30,7 +30,7 @@ jobs:
       - name: valerio-cfn-ecs
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-arn: ${{ secrets.AWS_ROLE_ARN }}
           name: valerio-cfn-ecs
           template: ecs.yml
           no-fail-on-empty-changeset: "1"
