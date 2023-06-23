@@ -43,7 +43,7 @@ Resources:
     Properties:
       DomainName: !Join
         - "."
-        - - !Sub ${{ env.BRANCH_NAME }}
+        - - ${{ env.BRANCH_NAME }}
           - valerio.sandbox.soluzionifutura.it
       ValidationMethod: DNS
       DomainValidationOptions:
