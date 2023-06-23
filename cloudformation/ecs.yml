@@ -41,7 +41,10 @@ Resources:
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: !Sub "${{ env.BRANCH_NAME }}.valerio.sandbox.soluzionifutura.it"
+      DomainName: !Join
+        - "."
+        - - !Sub ${{ env.BRANCH_NAME }}
+          - valerio.sandbox.soluzionifutura.it
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: sandbox.soluzionifutura.it
