@@ -48,8 +48,8 @@ jobs:
           name: valerio-cfn-ecs
           template: cloudformation/ecs.yml
           no-fail-on-empty-changeset: "1"
-          parameters: |
-            ContainerImageArn=${{ steps.build.outputs.image-arn }}
+          # parameters: |
+          #   pContainerImageArn=${{ steps.build.outputs.image-arn }}
         env:
           BRANCH_NAME: ${{ github.ref }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}

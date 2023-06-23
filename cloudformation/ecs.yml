@@ -7,9 +7,9 @@ Parameters:
     Type: String
     Description: Nome dell'ambiente
     Default: container-express-aws
-  pContainerImageArn:
-    Type: String
-    Description: ARN dell'immagine Docker
+  # pContainerImageArn:
+  #   Type: String
+  #   Description: ARN dell'immagine Docker
 
 Resources:
   ApplicationLoadBalancer:
