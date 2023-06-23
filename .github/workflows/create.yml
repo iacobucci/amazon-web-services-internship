@@ -42,15 +42,6 @@ jobs:
           template: cloudformation/vpc.yml
           no-fail-on-empty-changeset: "1"
 
-      - name: Build and Push Docker Image
-        id: build
-        env:
-          ECR_REPOSITORY: my-ecr-repository
-        run: |
-          # Ottenere l'ARN dell'immagine generata
-          IMAGE_ARN=$(aws ecr describe-images --repository-name $ECR_REPOSITORY --query 'images[0].imageArn' --output text)
-          echo "::set-output name=image-arn::$IMAGE_ARN"
-
       - name: valerio-cfn-ecs
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
