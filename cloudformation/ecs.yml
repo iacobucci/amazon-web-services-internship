@@ -7,6 +7,14 @@ Parameters:
     Type: String
     Description: Nome dell'ambiente
     Default: container-express-aws
+  pCName:
+    Type: String
+    Description: Nome del container
+    Default: valerio.sandbox.soluzionifutura.it
+  pBranchName:
+    Type: String
+    Description: Nome del branch
+    Default: master
   # pContainerImageArn:
   #   Type: String
   #   Description: ARN dell'immagine Docker
@@ -43,8 +51,8 @@ Resources:
     Properties:
       DomainName: !Join
         - "."
-        - - ${{ env.BRANCH_NAME }}
-          - valerio.sandbox.soluzionifutura.it
+        - - !Ref pBranchName
+          - !Ref pCName
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: sandbox.soluzionifutura.it
