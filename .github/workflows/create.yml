@@ -1,0 +1,71 @@
+name: Cloudformation create
+on:
+  create:
+    branches:
+      - "*"
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: github-oidc-session
+          aws-region: eu-north-1
+
+      # - name: valerio-cfn-vpc
+      #   uses: aws-actions/aws-cloudformation-github-deploy@v1
+      #   with:
+      #     name: valerio-vpc
+      #     template: vpc.yml
+      #     no-fail-on-empty-changeset: "1"
+      
+      - name: Check if VPC exists
+        id: stack-status
+        run: |
+          aws cloudformation describe-stacks --stack-name valerio-cfn-vpc --region eu-north-1 || echo "::set-output name=stack-exists::false"
+
+      - name: Create VPC stack
+        if: steps.stack-status.outputs.stack-exists != 'true'
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-vpc
+          template: cloudformation/vpc.yml
+          no-fail-on-empty-changeset: "1"
+
+      - name: Build and Push Docker Image
+        id: build
+        env:
+          ECR_REPOSITORY: my-ecr-repository
+        run: |
+          # Ottenere l'ARN dell'immagine generata
+          IMAGE_ARN=$(aws ecr describe-images --repository-name $ECR_REPOSITORY --query 'images[0].imageArn' --output text)
+          echo "::set-output name=image-arn::$IMAGE_ARN"
+
+      - name: valerio-cfn-ecs
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-ecs
+          template: cloudformation/ecs.yml
+          no-fail-on-empty-changeset: "1"
+          parameters: |
+            ContainerImageArn=${{ steps.build.outputs.image-arn }}
+        env:
+          BRANCH_NAME: ${{ github.ref }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
+          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+          RDS_HOSTNAME: ${{ secrets.RDS_HOSTNAME }}
+          RDS_PORT: ${{ secrets.RDS_PORT }}
+          RDS_DATABASE: ${{ secrets.RDS_DB_NAME }}
+          CODESTAR_CONNECTION_ARN: ${{ secrets.CODESTAR_CONNECTION_ARN }}
+          # prendere dal branch name

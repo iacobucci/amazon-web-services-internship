@@ -1,10 +1,15 @@
 AWSTemplateFormatVersion: "2010-09-09"
+#internal
+# internet facing
 
 Parameters:
   pEnvironmentName:
     Type: String
     Description: Nome dell'ambiente
     Default: container-express-aws
+  pContainerImageArn:
+    Type: String
+    Description: ARN dell'immagine Docker
 
 Resources:
   ApplicationLoadBalancer:
@@ -36,7 +41,7 @@ Resources:
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: valerio.sandbox.soluzionifutura.it
+      DomainName: !Sub "${{ env.BRANCH_NAME }}.valerio.sandbox.soluzionifutura.it"
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: sandbox.soluzionifutura.it
@@ -62,18 +67,18 @@ Resources:
       Protocol: HTTPS
       Certificates:
         - CertificateArn: !Ref SSLCertificate
-          
+
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/ecs/${pEnvironmentName}/web"
-      RetentionInDays: 14 
-  
+      RetentionInDays: 14
+
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: !Ref pEnvironmentName
-  
+
   DefaultSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -112,15 +117,15 @@ Resources:
             - !ImportValue valerio-securitygroup
             - !Ref DefaultSecurityGroup
       LoadBalancers:
-          - ContainerName: !Ref pEnvironmentName
-            ContainerPort: 3000
-            TargetGroupArn: !Ref FargateTargetGroup
-  
+        - ContainerName: !Ref pEnvironmentName
+          ContainerPort: 3000
+          TargetGroupArn: !Ref FargateTargetGroup
+
   ECSTaskRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
@@ -132,7 +137,65 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-        # - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+
+  # MyECRRepository:
+  #   Type: AWS::ECR::Repository
+  #   Properties:
+  #     RepositoryName: MyRepository
+
+  # CodeBuildServiceRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: CodeBuildServiceRole
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: codebuild.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: CodeBuildPolicy
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - logs:CreateLogGroup
+  #                 - logs:CreateLogStream
+  #                 - logs:PutLogEvents
+  #               Resource: arn:aws:logs:*:*:*
+  #             - Effect: Allow
+  #               Action:
+  #                 - ecr:GetAuthorizationToken
+  #                 - ecr:BatchCheckLayerAvailability
+  #                 - ecr:GetDownloadUrlForLayer
+  #                 - ecr:BatchGetImage
+  #                 - ecr:InitiateLayerUpload
+  #                 - ecr:UploadLayerPart
+  #                 - ecr:CompleteLayerUpload
+  #                 - ecr:PutImage
+  #               Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${MyECRRepository}
+
+  # MyCodeBuildProject:
+  #   Type: AWS::CodeBuild::Project
+  #   Properties:
+  #     Name: MyCodeBuildProject
+  #     ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+  #     Artifacts:
+  #       Type: NO_ARTIFACTS
+  #     Environment:
+  #       Type: LINUX_CONTAINER
+  #       ComputeType: BUILD_GENERAL1_SMALL
+  #       Image: aws/codebuild/standard:4.0
+  #       EnvironmentVariables:
+  #         - Name: ECR_REPOSITORY
+  #           Value: !Ref MyECRRepository
+  #     Source:
+  #       Type: CODECOMMIT
+  #       Location: !Ref CodeCommitRepository
+          
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -147,9 +210,10 @@ Resources:
       NetworkMode: awsvpc
       ContainerDefinitions:
         - Name: !Ref pEnvironmentName
-          Image: 861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws:88e8dc0
+          Image: 861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws
+          # Image: 861507897222.dkr.ecr.eu-north-1.amazonaws.com/valerio-express-aws:88e8dc0
           # Image: public.ecr.aws/a5r5a1c8/valerio-express-aws-public:latest
-            
+
           Essential: true
           PortMappings:
             - Name: container-express-aws-3000-tcp
@@ -164,15 +228,15 @@ Resources:
             - Name: S3_BUCKET
               Value: !Ref S3Bucket
             - Name: RDS_PASSWORD
-              Value: password
+              Value: ${{env.RDS_PASSWORD}}
             - Name: RDS_HOSTNAME
-              Value: !GetAtt RDS.Endpoint.Address
+              Value: ${{env.RDS_HOSTNAME}}
             - Name: RDS_DATABASE
-              Value: node
+              Value: ${{env.RDS_DATABASE}}
             - Name: RDS_PORT
-              Value: "3306"
+              Value: ${{env.RDS_PORT}}
             - Name: RDS_USERNAME
-              Value: admin
+              Value: ${{env.RDS_USERNAME}}
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -180,7 +244,7 @@ Resources:
               awslogs-create-group: "true"
               awslogs-region: eu-north-1
               awslogs-stream-prefix: ecs
-    
+
   RDSSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
@@ -193,7 +257,7 @@ Resources:
     Type: AWS::KMS::Key
     Properties:
       KeyPolicy:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Id: key-default-1
         Statement:
           - Sid: root
@@ -201,7 +265,7 @@ Resources:
             Principal:
               AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action: kms:*
-            Resource: '*'
+            Resource: "*"
           - Sid: ecsTaskExecutionRole
             Effect: "Allow"
             Principal:
@@ -231,9 +295,9 @@ Resources:
               - "kms:Update*"
             Resource: "*"
 
-                
   RDS:
     Type: AWS::RDS::DBInstance
+    DeletionPolicy: Retain
     Properties:
       StorageType: gp3
       AllocatedStorage: "20"
@@ -248,9 +312,10 @@ Resources:
       StorageEncrypted: true
       KmsKeyId: !GetAtt Kms.Arn
       DBName: node
-  
+
   S3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
       BucketName: valerio-bucket-s3-cfn
       AccessControl: Private
@@ -268,6 +333,7 @@ Resources:
 
   ArtifactS3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
       BucketName: valerio-bucket-s3-artifact
       AccessControl: Private
@@ -282,7 +348,7 @@ Resources:
             ServerSideEncryptionByDefault:
               KMSMasterKeyID: !GetAtt Kms.Arn
               SSEAlgorithm: aws:kms
-      
+
   CodePipeLine:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -299,16 +365,16 @@ Resources:
                 Provider: CodeStarSourceConnection
                 Version: 1
               RunOrder: 1
-              Configuration: 
-                ConnectionArn: arn:aws:codestar-connections:eu-north-1:861507897222:connection/e1c42544-481c-47df-aa9e-0ef7ea5e2f09
+              Configuration:
+                ConnectionArn: ${{env.CODESTAR_CONNECTION_ARN}}
                 FullRepositoryId: iacobucci/express-aws
-                BranchName: ecs
+                BranchName: ${{env.BRANCH_NAME}}
               Name: SourceAction
               OutputArtifacts:
                 - Name: SourceArtifact
         - Name: Build
-          Actions: 
-            - InputArtifacts: 
+          Actions:
+            - InputArtifacts:
                 - Name: SourceArtifact
               ActionTypeId:
                 Category: Build
@@ -316,14 +382,14 @@ Resources:
                 Provider: CodeBuild
                 Version: 1
               RunOrder: 2
-              Configuration: 
+              Configuration:
                 ProjectName: valerio-codebuild-docker
                 PrimarySource: SourceArtifact
               Name: BuildAction
               OutputArtifacts:
                 - Name: BuildArtifact
         - Name: Deploy
-          Actions: 
+          Actions:
             - InputArtifacts:
                 - Name: BuildArtifact
               ActionTypeId:
@@ -395,7 +461,7 @@ Outputs:
     Value: !Ref AlbListener443
     Export:
       Name: valerio-alblistener443
-      
+
   RDS:
     Description: RDS MySQL instance
     Value: !Ref RDS
@@ -406,4 +472,3 @@ Outputs:
     Value: !Ref S3Bucket
     Export:
       Name: valerio-s3bucket
- 

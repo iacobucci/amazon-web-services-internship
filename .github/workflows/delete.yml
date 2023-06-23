@@ -1,8 +1,8 @@
-name: Cloudformation
+name: Cloudformation delete
 on:
-  create:
+  delete:
     branches:
-      - "cfn"
+      - "*"
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -22,16 +22,16 @@ jobs:
           role-session-name: github-oidc-session
           aws-region: eu-north-1
 
-      - name: valerio-cfn-vpc
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: valerio-cfn-vpc
-          template: vpc.yml
-          no-fail-on-empty-changeset: "1"
-
       - name: valerio-cfn-ecs
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: valerio-cfn-ecs
-          template: ecs.yml
-          no-fail-on-empty-changeset: "1"
+          template: cloudformation/ecs.yml
+          command: delete
+
+      - name: valerio-cfn-vpc
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: valerio-cfn-vpc
+          template: cloudformation/vpc.yml
+          command: delete
