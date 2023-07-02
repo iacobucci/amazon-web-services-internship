@@ -52,7 +52,7 @@ jobs:
           name: ${{ steps.set_ecs_stack_to_branch_name.outputs.name }}
           template: cloudformation/ecs.yml
           no-fail-on-empty-changeset: "1"
-          parameters: |
+          parameter-overrides: >-
             pBranchName=${{ github.ref }}
         env:
           BRANCH_NAME: ${{ github.ref }}
