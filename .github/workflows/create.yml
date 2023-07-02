@@ -41,11 +41,15 @@ jobs:
           name: valerio-cfn-vpc
           template: cloudformation/vpc.yml
           no-fail-on-empty-changeset: "1"
+            
+      - name: Set ecs stack to branch name
+        id: set_action_name
+        run: echo "::set-output name=name::valerio-${GITHUB_REF#refs/heads/}-ecs"
 
       - name: valerio-cfn-ecs
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: valerio-cfn-ecs
+          name: ${{ steps.set_ecs_stack_to_branch_name.outputs.name }}
           template: cloudformation/ecs.yml
           no-fail-on-empty-changeset: "1"
           parameters: |

@@ -15,6 +15,11 @@ Parameters:
     Type: String
     Description: Nome del branch
     Default: master
+  pHostedZoneId:
+    Description: Id della hosted zone
+    Type: String
+    Default: Z05711693JWUSZY3QSZ10
+      
   # pContainerImageArn:
   #   Type: String
   #   Description: ARN dell'immagine Docker
@@ -45,6 +50,20 @@ Resources:
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 80
       Protocol: HTTP
+        
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Join
+        - "."
+        - - !Ref pBranchName
+          - !Ref pCName
+      HostedZoneId : !Ref pHostedZoneId
+      ResourceRecords:
+      - !GetAtt ApplicationLoadBalancer.DNSName
+      TTL: 900
+      Type: CNAME
+
 
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -54,9 +73,9 @@ Resources:
         - - !Ref pBranchName
           - !Ref pCName
       ValidationMethod: DNS
-      DomainValidationOptions:
-        - DomainName: sandbox.soluzionifutura.it
-          HostedZoneId: Z05711693JWUSZY3QSZ10
+      # DomainValidationOptions:
+      #   - DomainName: sandbox.soluzionifutura.it
+      #     HostedZoneId: Z05711693JWUSZY3QSZ10
 
   FargateTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -258,6 +277,7 @@ Resources:
 
   RDSSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
+    DeletionPolicy: Retain
     Properties:
       DBSubnetGroupDescription: valerio-rds-subnetgroup
       SubnetIds:
