@@ -21,6 +21,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: github-oidc-session
           aws-region: eu-north-1
+          oidc-http-cert-thumbprint: 6938fd4d98bab03faadb97b34396831e3780aea1
 
       # - name: valerio-cfn-vpc
       #   uses: aws-actions/aws-cloudformation-github-deploy@v1
