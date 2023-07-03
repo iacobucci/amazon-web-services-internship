@@ -399,7 +399,7 @@ Resources:
               Configuration:
                 ConnectionArn: ${{env.CODESTAR_CONNECTION_ARN}}
                 FullRepositoryId: iacobucci/express-aws
-                BranchName: ${{env.BRANCH_NAME}}
+                BranchName: !Ref pBranchName
               Name: SourceAction
               OutputArtifacts:
                 - Name: SourceArtifact
