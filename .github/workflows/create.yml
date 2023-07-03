@@ -55,9 +55,9 @@ jobs:
           template: cloudformation/ecs.yml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: >-
-            pBranchName=${{ github.ref }}
+            pBranchName=${{ github.ref_name }}
         env:
-          BRANCH_NAME: ${{ github.ref }}
+          BRANCH_NAME: ${{ github.ref_name }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
           RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
