@@ -348,7 +348,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: valerio-bucket-s3-cfn
+      # BucketName: valerio-bucket-s3-
       AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
@@ -366,7 +366,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: valerio-bucket-s3-artifact
+      # BucketName: valerio-bucket-s3-artifact
       AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
