@@ -95,8 +95,8 @@ Resources:
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 443
       Protocol: HTTPS
-      Certificates:
-        - CertificateArn: !Ref SSLCertificate
+      # Certificates:
+      #   - CertificateArn: !Ref SSLCertificate
 
   LogGroup:
     Type: AWS::Logs::LogGroup
@@ -477,11 +477,11 @@ Outputs:
     Value: !Ref ApplicationLoadBalancer
     Export:
       Name: valerio-applicationloadbalancer
-  SSLCertificate:
-    Description: SSL Certificate
-    Value: !Ref SSLCertificate
-    Export:
-      Name: valerio-sslcertificate
+  # SSLCertificate:
+  #   Description: SSL Certificate
+  #   Value: !Ref SSLCertificate
+  #   Export:
+  #     Name: valerio-sslcertificate
   AlbListener80:
     Description: Alb Listener 80
     Value: !Ref AlbListener80
