@@ -94,7 +94,7 @@ Resources:
           TargetGroupArn: !Ref FargateTargetGroup
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 443
-      Protocol: HTTPS
+      # Protocol: HTTPS
       # Certificates:
       #   - CertificateArn: !Ref SSLCertificate
 
