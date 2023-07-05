@@ -65,14 +65,14 @@ Resources:
       Type: CNAME
 
 
-  SSLCertificate:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Join
-        - "."
-        - - !Ref pBranchName
-          - !Ref pCName
-      ValidationMethod: DNS
+  # SSLCertificate:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !Join
+  #       - "."
+  #       - - !Ref pBranchName
+  #         - !Ref pCName
+  #     ValidationMethod: DNS
       # DomainValidationOptions:
       #   - DomainName: sandbox.soluzionifutura.it
       #     HostedZoneId: Z05711693JWUSZY3QSZ10
