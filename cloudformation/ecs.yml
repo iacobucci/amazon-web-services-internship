@@ -218,21 +218,21 @@ Resources:
   #                 - ecr:PutImage
   #               Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${MyECRRepository}
 
-  MyCodeBuildProject:
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Name: MyCodeBuildProject
-      # ServiceRole: !GetAtt CodeBuildServiceRole.Arn
-      ServiceRole: arn:aws:iam::861507897222:role/codeBuildServiceRole
-      Artifacts:
-        Type: NO_ARTIFACTS
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:4.0
-        EnvironmentVariables:
-          - Name: ECR_REPOSITORY
-            Value: !Ref MyECRRepository
+  # MyCodeBuildProject:
+  #   Type: AWS::CodeBuild::Project
+  #   Properties:
+  #     Name: MyCodeBuildProject
+  #     # ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+  #     ServiceRole: arn:aws:iam::861507897222:role/codeBuildServiceRole
+  #     Artifacts:
+  #       Type: NO_ARTIFACTS
+  #     Environment:
+  #       Type: LINUX_CONTAINER
+  #       ComputeType: BUILD_GENERAL1_SMALL
+  #       Image: aws/codebuild/standard:4.0
+  #       EnvironmentVariables:
+  #         - Name: ECR_REPOSITORY
+  #           Value: !Ref MyECRRepository
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
