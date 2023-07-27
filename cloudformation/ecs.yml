@@ -184,56 +184,6 @@ Resources:
     Properties:
       RepositoryName: !Ref pEnvironmentName
 
-  # CodeBuildServiceRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     RoleName: CodeBuildServiceRole
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service: codebuild.amazonaws.com
-  #           Action: sts:AssumeRole
-  #     Policies:
-  #       - PolicyName: CodeBuildPolicy
-  #         PolicyDocument:
-  #           Version: '2012-10-17'
-  #           Statement:
-  #             - Effect: Allow
-  #               Action:
-  #                 - logs:CreateLogGroup
-  #                 - logs:CreateLogStream
-  #                 - logs:PutLogEvents
-  #               Resource: arn:aws:logs:*:*:*
-  #             - Effect: Allow
-  #               Action:
-  #                 - ecr:GetAuthorizationToken
-  #                 - ecr:BatchCheckLayerAvailability
-  #                 - ecr:GetDownloadUrlForLayer
-  #                 - ecr:BatchGetImage
-  #                 - ecr:InitiateLayerUpload
-  #                 - ecr:UploadLayerPart
-  #                 - ecr:CompleteLayerUpload
-  #                 - ecr:PutImage
-  #               Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${MyECRRepository}
-
-  # MyCodeBuildProject:
-  #   Type: AWS::CodeBuild::Project
-  #   Properties:
-  #     Name: MyCodeBuildProject
-  #     # ServiceRole: !GetAtt CodeBuildServiceRole.Arn
-  #     ServiceRole: arn:aws:iam::861507897222:role/codeBuildServiceRole
-  #     Artifacts:
-  #       Type: NO_ARTIFACTS
-  #     Environment:
-  #       Type: LINUX_CONTAINER
-  #       ComputeType: BUILD_GENERAL1_SMALL
-  #       Image: aws/codebuild/standard:4.0
-  #       EnvironmentVariables:
-  #         - Name: ECR_REPOSITORY
-  #           Value: !Ref MyECRRepository
-
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
