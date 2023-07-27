@@ -232,10 +232,6 @@ Resources:
         EnvironmentVariables:
           - Name: ECR_REPOSITORY
             Value: !Ref MyECRRepository
-      Source:
-        Type: CODECOMMIT
-        Location: !Ref CodeCommitRepository
-          
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
