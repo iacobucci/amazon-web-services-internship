@@ -55,7 +55,7 @@ jobs:
           name: valerio-${{ github.ref_name }}-ecs
           disable-rollback: true
           template: cloudformation/ecs.yml
-          no-fail-on-empty-changeset: "1"
+          no-fail-on-empty-changeset: true
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: >-
             pBranchName=${{ github.ref_name }}
